@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import authRoutes from './routes/authRoutes.js';
+import profileRoutes from './routes/profileRoutes.js';
 
 dotenv.config();
 
@@ -20,8 +21,7 @@ app.get("/", (req, res) => {
 });
 
 app.use('/api/auth',authRoutes);
-
-app.use('/api/auth',authRoutes);
+app.use('/api/profile',profileRoutes);
 
 const PORT = process.env.PORT || 5000; 
 app.listen(PORT, () => {

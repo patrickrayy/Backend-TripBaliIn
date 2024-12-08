@@ -1,10 +1,10 @@
 import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/database';
+import sequelize from '../config/database.js';
 
 class User extends Model {}
 
 User.init({
-        fullName: {
+        name : {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -13,15 +13,19 @@ User.init({
             allowNull: false,
             unique: true
         },
+        role:{
+            type: DataTypes.STRING,
+            allowNull: true
+        },
         password: {
             type: DataTypes.STRING,
             allowNull: false
         },
-        phoneNumber: {
+        phone : {
             type: DataTypes.STRING,
             allowNull: false
         },
-        birthDate: {
+        tanggal_lahir: {
             type: DataTypes.DATE,
             allowNull: false,
         },
@@ -31,6 +35,8 @@ User.init({
         modelName: 'User',
         tableName: 'users',
         timestamps: true,
+        createdAt: 'created_at',  
+        updatedAt: 'updated_at',
         }
 );
 
