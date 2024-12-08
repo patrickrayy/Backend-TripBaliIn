@@ -17,6 +17,10 @@ User.init({
             type: DataTypes.STRING,
             allowNull: true
         },
+        location:{
+            type: DataTypes.TEXT,
+            allowNull: false,
+        },
         password: {
             type: DataTypes.STRING,
             allowNull: false

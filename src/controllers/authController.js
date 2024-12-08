@@ -3,7 +3,7 @@ import User from '../models/user.js';
 
 // Register function
 export const registerUser = async (req, res) => {
-  const { name, email, role, password, phone, tanggal_lahir } = req.body;
+  const { name, email, role, location, password, phone, tanggal_lahir } = req.body;
 
   try {
     const existingUser = await User.findOne({ where: { email } });
@@ -15,6 +15,7 @@ export const registerUser = async (req, res) => {
       name,
       email,
       role: role || 'user',
+      location,
       password,
       phone,
       tanggal_lahir,
