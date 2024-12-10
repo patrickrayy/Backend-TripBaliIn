@@ -1,10 +1,16 @@
-import { Model, DataTypes } from 'sequelize';
-import sequelize from '../config/database.js';
+    import { Model, DataTypes } from 'sequelize';
+    import sequelize from '../config/database.js';
+    import bcrypt from 'bcryptjs';
 
-class User extends Model {}
+    class User extends Model {
+        static associate(models) {
+            User.hasOne(models.Auths, { foreignKey: 'userId', as: 'auth' });
+          }
 
-User.init({
-        name : {
+    }
+
+    User.init({
+        name: {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -13,11 +19,11 @@ User.init({
             allowNull: false,
             unique: true
         },
-        role:{
+        role: {
             type: DataTypes.STRING,
             allowNull: true
         },
-        location:{
+        location: {
             type: DataTypes.TEXT,
             allowNull: false,
         },
@@ -25,7 +31,7 @@ User.init({
             type: DataTypes.STRING,
             allowNull: false
         },
-        phone : {
+        phone: {
             type: DataTypes.STRING,
             allowNull: false
         },
@@ -33,15 +39,13 @@ User.init({
             type: DataTypes.DATE,
             allowNull: false,
         },
-    },
-        {
+    }, {
         sequelize,
         modelName: 'User',
         tableName: 'users',
         timestamps: true,
-        createdAt: 'created_at',  
+        createdAt: 'created_at',
         updatedAt: 'updated_at',
-        }
-);
+    });
 
-export default User;
+    export default User;

@@ -1,26 +1,42 @@
 import jwt from 'jsonwebtoken';
 import  User  from '../models/user.js';
 
-const protect = async (req, res, next) =>{
-    const token = req.header('Authorization')?.replace('Bearer','  ')[1];
+const JWT_SECRET = process.env.JWT_SECRET
 
-    if (!token){
-        return res.status(401).json({message: 'Auth token missing'});
-    }
-
-    try{
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        
-        req.user = await User.findById(decoded._id);
-        
-        if(!req.user){
-            return res.status(401).json({message: 'User not found'});
+const verifyToken = async (req, res, next) => {
+    try {
+        const authorization = req.headers.authorization;
+    
+        if (!authorization) {
+          return res.status(401).json({
+            status: "Failed",
+            message: "Token is missing !",
+            isSuccess: true,
+            data: null,
+          });
         }
-        
+    
+        const token = authorization.split("Bearer ")[1];
+        const payload = jwt.verify(token, JWT_SECRET);
+        const user = await User.findByPk(payload.userId);
+    
+        req.user = user;
         next();
-    }catch (error){
-        return res.status(400).json({message: 'Invalid token or expired'});
-    }
-};
+      } catch (error) {
+        return res.status(500).json({
+          status: "Failed",
+          message: "You are unauthorized.",
+          isSuccess: true,
+          data: null,
+        });
+      }
+  };
 
-export default protect;
+//   const isAdmin = (req, res, next) => {
+//     if (req.user?.role !== 'admin') {
+//       return res.status(403).json({ message: 'Access denied' });
+//     }
+//     next();
+//   };
+
+export default verifyToken;

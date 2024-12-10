@@ -3,8 +3,6 @@ import dotenv from 'dotenv';
 import { URL } from 'url';
 
 dotenv.config();
-
-// Check if DB_URL is defined in the .env file
 if (!process.env.DB_URL) {
   console.error('Error: DB_URL is not defined in the .env file.');
   process.exit(1);
@@ -12,7 +10,7 @@ if (!process.env.DB_URL) {
 
 let dbUrl;
 try {
-  // Parse the DB_URL from the .env file
+
   dbUrl = new URL(process.env.DB_URL);
 } catch (error) {
   console.error('Invalid DB_URL format:', error);
@@ -21,7 +19,6 @@ try {
 
 console.log('Database URL:', process.env.DB_URL);
 
-// Create Sequelize instance using parsed values
 const sequelize = new Sequelize(
   dbUrl.pathname.slice(1),         
   dbUrl.username,                  
@@ -34,7 +31,6 @@ const sequelize = new Sequelize(
   }
 );
 
-// Authenticate the connection to MySQL database
 sequelize.authenticate()
   .then(() => {
     console.log('Database connected');
