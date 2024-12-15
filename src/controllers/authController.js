@@ -20,12 +20,17 @@ export const register = async (req, res) => {
                 message: 'Email already registered'
             });
         }
+
+        // Hash password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
         // Create new user
         const userId = await User.create({
             name,
             email,
             role: 'user',
-            password,
+            password: hashedPassword,  // Menggunakan password yang sudah di-hash
             tanggal_lahir,
             phone
         });
@@ -41,7 +46,7 @@ export const register = async (req, res) => {
             message: 'Internal server error'
         });
     }
- };
+};
 
 export const login = async (req, res) => {
     try {
