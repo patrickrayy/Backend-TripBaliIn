@@ -4,11 +4,10 @@
 
     class User extends Model {
         static associate(models) {
-            User.hasOne(models.Auths, { foreignKey: 'userId', as: 'auth' });
+            User.hasOne(models.Auths, { foreignKey: 'id', as: 'auth' });
           }
 
     }
-
     User.init({
         name: {
             type: DataTypes.STRING,

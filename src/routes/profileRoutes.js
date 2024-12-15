@@ -1,11 +1,11 @@
 import express from 'express';
 import { getProfile,updateProfile } from '../controllers/profileController.js';
-import protect from '../middlewares/authMiddleware.js';
+import verifyToken from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-router.get('/profile', protect,getProfile);
+router.get('/profile', verifyToken);
 
-router.put('/profile', protect,updateProfile);
+router.put('/profile', updateProfile);
 
 export default router;
