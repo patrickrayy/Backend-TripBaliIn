@@ -5,7 +5,6 @@ import User from '../models/user.js';
 export const register = async (req, res) => {
     try {
         const { name, email, password, tanggal_lahir, phone } = req.body;
-
         // Validate input
         if (!name || !email || !password || !tanggal_lahir || !phone) {
             return res.status(400).json({
@@ -13,7 +12,6 @@ export const register = async (req, res) => {
                 message: 'All fields are required'
             });
         }
-
         // Check if email already exists
         const existingUser = await User.findByEmail(email);
         if (existingUser) {
@@ -22,16 +20,15 @@ export const register = async (req, res) => {
                 message: 'Email already registered'
             });
         }
-
         // Create new user
         const userId = await User.create({
             name,
             email,
+            role: 'user',
             password,
             tanggal_lahir,
             phone
         });
-
         res.status(201).json({
             status: 'success',
             message: 'Registration successful',
@@ -44,7 +41,7 @@ export const register = async (req, res) => {
             message: 'Internal server error'
         });
     }
-};
+ };
 
 export const login = async (req, res) => {
     try {
