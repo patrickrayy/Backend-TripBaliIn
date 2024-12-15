@@ -1,51 +1,66 @@
-    import { Model, DataTypes } from 'sequelize';
-    import sequelize from '../config/database.js';
-    import bcrypt from 'bcryptjs';
+const pool = require('../config/database');
+const bcrypt = require('bcrypt');
 
-    class User extends Model {
-        static associate(models) {
-            User.hasOne(models.Auths, { foreignKey: 'userId', as: 'auth' });
-          }
-
+class User {
+    static async findByEmail(email) {
+        const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+        return rows[0];
     }
 
-    User.init({
-        name: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        email: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true
-        },
-        role: {
-            type: DataTypes.STRING,
-            allowNull: true
-        },
-        location: {
-            type: DataTypes.TEXT,
-            allowNull: false,
-        },
-        password: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        phone: {
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        tanggal_lahir: {
-            type: DataTypes.DATE,
-            allowNull: false,
-        },
-    }, {
-        sequelize,
-        modelName: 'User',
-        tableName: 'users',
-        timestamps: true,
-        createdAt: 'created_at',
-        updatedAt: 'updated_at',
-    });
+    static async create(userData) {
+        const { name, email, password, tanggal_lahir, phone } = userData;
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-    export default User;
+        const [result] = await pool.query(
+            'INSERT INTO users (name, email, password, role, tanggal_lahir, phone) VALUES (?, ?, ?, ?, ?, ?)',
+            [name, email, hashedPassword, 'user', tanggal_lahir, phone]
+        );
+
+        return result.insertId;
+    }
+
+    static async findById(id) {
+        const [rows] = await pool.query('SELECT id, name, email, role, tanggal_lahir, phone, created_at, updated_at FROM users WHERE id = ?', [id]);
+        return rows[0];
+    }
+
+    static async updateProfile(id, userData) {
+        const { name, email, tanggal_lahir, phone } = userData;
+
+        // Build dynamic query parts and values
+        const updates = [];
+        const values = [];
+
+        if (name) {
+            updates.push('name = ?');
+            values.push(name);
+        }
+
+        if (email) {
+            updates.push('email = ?');
+            values.push(email);
+        }
+
+        if (tanggal_lahir) {
+            updates.push('tanggal_lahir = ?');
+            values.push(tanggal_lahir);
+        }
+
+        if (phone) {
+            updates.push('phone = ?');
+            values.push(phone);
+        }
+
+        updates.push('updated_at = NOW()');
+
+        // Add id as the last value
+        values.push(id);
+
+        const query = `UPDATE users SET ${updates.join(', ')} WHERE id = ?`;
+
+        const [result] = await pool.query(query, values);
+        return result.affectedRows > 0;
+    }
+}
+
+module.exports = User;
