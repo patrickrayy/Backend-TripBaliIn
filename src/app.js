@@ -1,9 +1,10 @@
-const express = require('express');
-const cors = require('cors');
-const morgan = require('morgan');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import dotenv from 'dotenv';
+import authRoutes from './routes/authRoutes.js';
 
-const authRoutes = require('./routes/authRoutes');
+dotenv.config();
 
 const app = express();
 
@@ -46,4 +47,4 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-module.exports = app;
+export default app;
