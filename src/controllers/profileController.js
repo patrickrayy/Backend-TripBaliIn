@@ -47,7 +47,7 @@ export const updateProfile = async (req, res) => {
         role,
         tanggal_lahir,
       };
-  
+
       // Tambahkan password jika ada
       if (password) {
         updateObject.password = hashedPassword;

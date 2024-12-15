@@ -1,43 +1,14 @@
-import { Sequelize } from 'sequelize';
-import dotenv from 'dotenv';
-import { URL } from 'url';
+const mysql = require('mysql2/promise');
+require('dotenv').config();
 
-dotenv.config();
-if (!process.env.DB_URL) {
-  console.error('Error: DB_URL is not defined in the .env file.');
-  process.exit(1);
-}
+const pool = mysql.createPool({
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'your_database_name',
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
 
-let dbUrl;
-try {
-
-  dbUrl = new URL(process.env.DB_URL);
-} catch (error) {
-  console.error('Invalid DB_URL format:', error);
-  process.exit(1);
-}
-
-console.log('Database URL:', process.env.DB_URL);
-
-const sequelize = new Sequelize(
-  dbUrl.pathname.slice(1),         
-  dbUrl.username,                  
-  dbUrl.password,                  
-  {
-    host: dbUrl.hostname,          
-    dialect: 'mysql',              
-    port: dbUrl.port || 3306,      
-    logging: false,                
-  }
-);
-
-sequelize.authenticate()
-  .then(() => {
-    console.log('Database connected');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-    process.exit(1);
-  });
-
-export default sequelize;
+module.exports = pool;
