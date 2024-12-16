@@ -22,28 +22,28 @@ class User extends Model {
 User.init({
     name: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
+        unique: true,
     },
     role: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
     },
     location: {
         type: DataTypes.TEXT,
-        allowNull: true,
+        allowNull: false,
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     phone: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     tanggal_lahir: {
         type: DataTypes.DATE,

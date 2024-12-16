@@ -4,15 +4,15 @@ import User from '../models/user.js';
 
 export const register = async (req, res) => {
     try {
-        const { name, email, password, tanggal_lahir, phone } = req.body;
-        // Validate input
+        const { name, email, password, location, tanggal_lahir, phone } = req.body;
+
         if (!name || !email || !password || !tanggal_lahir || !phone) {
             return res.status(400).json({
                 status: 'error',
                 message: 'All fields are required'
             });
         }
-        // Check if email already exists
+
         const existingUser = await User.findByEmail(email);
         if (existingUser) {
             return res.status(400).json({
@@ -21,16 +21,15 @@ export const register = async (req, res) => {
             });
         }
 
-        // Hash password
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Create new user
         const userId = await User.create({
             name,
             email,
             role: 'user',
-            password: hashedPassword,  // Menggunakan password yang sudah di-hash
+            password: hashedPassword, 
+            location, 
             tanggal_lahir,
             phone
         });
@@ -52,7 +51,6 @@ export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Validate input
         if (!email || !password) {
             return res.status(400).json({
                 status: 'error',
@@ -60,7 +58,6 @@ export const login = async (req, res) => {
             });
         }
 
-        // Check user existence
         const user = await User.findByEmail(email);
         if (!user) {
             return res.status(401).json({
@@ -69,7 +66,6 @@ export const login = async (req, res) => {
             });
         }
 
-        // Verify password
         const isValidPassword = await bcrypt.compare(password, user.password);
         if (!isValidPassword) {
             return res.status(401).json({
@@ -78,7 +74,6 @@ export const login = async (req, res) => {
             });
         }
 
-        // Generate token
         const token = jwt.sign(
             { id: user.id, email: user.email, role: user.role },
             process.env.JWT_SECRET,
@@ -93,7 +88,9 @@ export const login = async (req, res) => {
                     id: user.id,
                     name: user.name,
                     email: user.email,
-                    role: user.role
+                    role: user.role,
+                    tanggal_lahir: user.tanggal_lahir,
+                    location : user.location
                 }
             }
         });
@@ -131,17 +128,15 @@ export const getProfile = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
     try {
-        const { name, email, tanggal_lahir, phone } = req.body;
+        const { name, email, tanggal_lahir, phone, location } = req.body;
 
-        // Validate input
-        if (!name || !email || !tanggal_lahir || !phone) {
+        if (!name || !email || !tanggal_lahir|| !location || !phone) {
             return res.status(400).json({
                 status: 'error',
                 message: 'All fields are required'
             });
         }
 
-        // Check if email is being changed and if it already exists
         if (email !== req.user.email) {
             const existingUser = await User.findByEmail(email);
             if (existingUser && existingUser.id !== req.user.id) {
@@ -156,6 +151,7 @@ export const updateProfile = async (req, res) => {
             name,
             email,
             tanggal_lahir,
+            location,
             phone
         });
 
@@ -173,6 +169,7 @@ export const updateProfile = async (req, res) => {
                 name,
                 email,
                 tanggal_lahir,
+                location,
                 phone
             }
         });
