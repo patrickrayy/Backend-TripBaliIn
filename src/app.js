@@ -16,6 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/profile', authRoutes)
 
 // Basic route for testing
 app.get('/', (req, res) => {
