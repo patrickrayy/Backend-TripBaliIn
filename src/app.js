@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import dotenv from 'dotenv';
 import authRoutes from './routes/routes.js';
 import accommodationRoutes from './routes/accommodationRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
 
 dotenv.config();
 
@@ -20,6 +21,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/profile', authRoutes);
 app.use('/api/accommodations', accommodationRoutes);
 app.use('/api/accommodations', accommodationRoutes);
+app.use('/api/payment', paymentRoutes);
 
 // Basic route for testing
 app.get('/', (req, res) => {
