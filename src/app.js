@@ -3,6 +3,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import authRoutes from './routes/routes.js';
+import accommodationRoutes from './routes/accommodationRoutes.js';
 
 dotenv.config();
 
@@ -16,13 +17,15 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/profile', authRoutes)
+app.use('/api/profile', authRoutes);
+app.use('/api/accommodations', accommodationRoutes);
+app.use('/api/accommodations', accommodationRoutes);
 
 // Basic route for testing
 app.get('/', (req, res) => {
     res.json({
         status: 'success',
-        message: 'Welcome to Tribalin API'
+        message: 'Welcome to TripBaliIn API'
     });
 });
 
